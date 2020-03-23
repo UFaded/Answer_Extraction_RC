@@ -1,0 +1,2 @@
+# Answer_Extraction_RC
+基于法律文本的答案抽取式阅读理解
