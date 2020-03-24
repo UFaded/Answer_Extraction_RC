@@ -9,6 +9,52 @@ from pytorch_pretrained_bert.tokenization import BertTokenizer, whitespace_token
 
 logger = logging.getLogger(__name__)
 
+
+
+class SquadExample(object):
+    """
+    A single training/test example for the Squad dataset.
+    For example without an answer, the start and end position are -1.
+    """
+
+    def __init__(self,
+                 qa_id,
+                 question,
+                 doc_tokens,
+                 answer = None,
+                 start_position = None,
+                 end_position = None,
+                 is_impossible = None,
+                 is_yes = None,
+                 is_no = None):
+        self.qa_id = qa_id
+        self.question = question
+        self.doc_tokens = doc_tokens
+        self.answer = answer
+        self.start_position = start_position
+        self.end_position = end_position
+        self.is_impossible = is_impossible
+        self.is_yes = is_yes
+        self.is_no = is_no
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        cur = ""
+        cur += "qa_id: %s" % (self.qa_id)
+        cur += ", question: %s" % (self.question)
+        cur += ", doc_tokens: [%s]" % (" ".join(self.doc_tokens))
+
+        if self.start_position:
+            cur += ", start_position: %d" % (self.start_position)
+        if self.end_position:
+            cur += ", end_position: %d" % (self.end_position)
+        if self.is_impossible:
+            cur += ", is_impossible: %d" % (self.is_impossible)
+        return cur
+
+
 '''
 从结构体中分离出: domain context qas 它们在序列上一一对应
 context: 案例内容
@@ -26,7 +72,7 @@ def read_squad_examples(input_file, is_training=True, version_2_with_negative=Tr
 
         # dataset: 数据集中所有案例
         dataset = json.load(reader)["data"]
-        print(len(dataset)) #2000
+        #print(len(dataset)) #2000
 
         examples = []
 
@@ -105,13 +151,23 @@ def read_squad_examples(input_file, is_training=True, version_2_with_negative=Tr
                             answer = ""
 
                     # if training
+                    example = SquadExample(
+                        qa_id=qa_id,
+                        question=question,
+                        doc_tokens=doc_tokens,
+                        answer=answer,
+                        start_position=start_position,
+                        end_position=end_position,
+                        is_impossible=is_impossible,
+                        is_yes=is_yes,
+                        is_no=is_no,
+                    )
+                    print(example)
+                    examples.append(example)
                 # for qa in qas
             # for paragraph
         # for item
-
-
-
-
+        return examples
 
 
 
