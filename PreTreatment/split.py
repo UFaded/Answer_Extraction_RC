@@ -4,9 +4,7 @@ import random
 with open('../Dataset/small_train_data.json') as fh:
     data = json.load(fh)
 
-
 casename = {}
-
 
 for sample in data['data']:
     case = sample['paragraphs'][0]['casename']

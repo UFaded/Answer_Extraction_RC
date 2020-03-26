@@ -4,13 +4,14 @@ import logging
 import math
 from io import open
 import args
+from tqdm import tqdm
 
 from pytorch_pretrained_bert.tokenization import BertTokenizer, whitespace_tokenize
 
 logger = logging.getLogger(__name__)
 
 
-
+# 把example定义成一个对象了，而不是一个dict
 class SquadExample(object):
     """
     A single training/test example for the Squad dataset.
@@ -19,7 +20,7 @@ class SquadExample(object):
 
     def __init__(self,
                  qa_id,
-                 question,
+                 question_text,
                  doc_tokens,
                  answer = None,
                  start_position = None,
@@ -28,7 +29,7 @@ class SquadExample(object):
                  is_yes = None,
                  is_no = None):
         self.qa_id = qa_id
-        self.question = question
+        self.question_text = question_text
         self.doc_tokens = doc_tokens
         self.answer = answer
         self.start_position = start_position
@@ -43,7 +44,7 @@ class SquadExample(object):
     def __repr__(self):
         cur = ""
         cur += "qa_id: %s" % (self.qa_id)
-        cur += ", question: %s" % (self.question)
+        cur += ", question: %s" % (self.question_text)
         cur += ", doc_tokens: [%s]" % (" ".join(self.doc_tokens))
 
         if self.start_position:
@@ -55,13 +56,17 @@ class SquadExample(object):
         return cur
 
 
+class InputFeatures(object):
+    """A single set of features of data."""
+
+
 '''
 从结构体中分离出: domain context qas 它们在序列上一一对应
 context: 案例内容
 qas: 包含了五个小问题
 domain: 案件类型
 '''
-
+# read_squad_example 负责从json中读取数据，并进行一些处理，但是处理后的结果并不能输入进BERT模型中
 def read_squad_examples(input_file, is_training=True, version_2_with_negative=True):
     """
     :param input_file: 待读取文件训练集路径
@@ -79,15 +84,15 @@ def read_squad_examples(input_file, is_training=True, version_2_with_negative=Tr
         # 分析提取dataset中的每个案例
         for item in dataset:
             for paragraph in item['paragraphs']:
-                text = paragraph['context']
+                content_text = paragraph['context']
                 qas = paragraph['qas']
 
 
                 doc_tokens = []
                 char_to_word_offset = []
 
-                # 方便之后抽出答案
-                for word in text:
+                # doc_token是
+                for word in content_text:
                     doc_tokens.append(word)
                     char_to_word_offset.append(len(doc_tokens) - 1)
 
@@ -95,7 +100,7 @@ def read_squad_examples(input_file, is_training=True, version_2_with_negative=Tr
                 # qas是一个案例下的所有问题，qa是所有问题中的一个问题
                 for qa in qas:
                     qa_id = qa['id']
-                    question = qa['question']
+                    question_text = qa['question']
 
                     # 参数自定义
                     start_position = None
@@ -128,7 +133,6 @@ def read_squad_examples(input_file, is_training=True, version_2_with_negative=Tr
                             real_answer = "".join(doc_tokens[start_position:end_position + 1])
 
                             clean_answer = " ".join(whitespace_tokenize(answer))
-                            print(start_position, end_position, real_answer, clean_answer)
 
                             # 如果抽取出来的答案 与 材料提供的数据 不能匹配
                             if real_answer.find(clean_answer) == -1:
@@ -153,7 +157,7 @@ def read_squad_examples(input_file, is_training=True, version_2_with_negative=Tr
                     # if training
                     example = SquadExample(
                         qa_id=qa_id,
-                        question=question,
+                        question_text=question_text,
                         doc_tokens=doc_tokens,
                         answer=answer,
                         start_position=start_position,
@@ -162,13 +166,98 @@ def read_squad_examples(input_file, is_training=True, version_2_with_negative=Tr
                         is_yes=is_yes,
                         is_no=is_no,
                     )
-                    print(example)
                     examples.append(example)
+                    """
+                    example's key: qa_id: ... , question: ... 
+                    """
                 # for qa in qas
             # for paragraph
         # for item
         return examples
 
+"""
+convert_example_to_features任务
+1. input_id
+2. input_mask
+3. segment_id
+4. label_id
+"""
+# 使用该函数将examples处理成能够输入到bert中的格式，主要是截断、padding和token转换为id等
+def convert_example_to_features(examples, tokenizer, max_seq_length, doc_stride, max_query_length, is_training=True):
+
+    # unk_token 就是生词
+    features, unk_tokens = [], {}
+
+    for(ex_index, example) in enumerate(examples):
+
+        #对句子a分词
+        query_tokens = tokenizer.tokenize(example.question_text) # ['在', '原', '告', '处', '投', '保', '的', '人', '投', '了', '什', '么', '保', '险', '？']
+        doc_tokens = example.doc_tokens
+        all_doc_tokens = []
+
+        for(i, token) in enumerate(doc_tokens):
+            #
+            sub_tokens = tokenizer.tokenize(token)
+            for sub_token in sub_tokens:
+                all_doc_tokens.append(sub_token)
+
+            # for sub_token in sub_tokens:
+            #     all_doc_tokens.append(sub_token)
+
+            if "[UNK]" in token:
+                if token in unk_tokens:
+                    unk_tokens[token] += 1
+                else:
+                    unk_tokens[token] = 1
+
+        start_position = None
+        end_position = None
+
+        # 训练集 & 不可回答任务
+        if is_training and example.is_impossible:
+            start_position = end_position = -1
+
+        # 训练集 & 可回答任务
+        if is_training and not example.is_impossible:
+            if example.is_yes or example.is_no :
+                start_position = end_position = -1
+            else:
+                start_position = example.start_position
+                end_position = example.end_position
+
+        # The -3 accounts for [CLS] [SEP] [SEP]
+
+        max_tokens_for_doc = args.max_seq_length - len(query_tokens) - 3
+
+        # 问题截断
+        if len(query_tokens) > max_query_length:
+            query_tokens = query_tokens[0: max_query_length]
+
+        tokens = []
+        segment_ids = []
+
+        tokens.append("[CLS]")
+        segment_ids.append(0)
+
+        for token in query_tokens:
+            tokens.append(token)
+            segment_ids.append(0)
+
+        tokens.append("SEP")
+        segment_ids.append(0)
+
+        for i in doc_tokens:
+            tokens.append(i)
+            segment_ids.append(1)
+
+        tokens.append("[SEP]")
+        segment_ids.append(1)
+
+        print(len(tokens), len(segment_ids))
+        print(tokens)
+        print(segment_ids)
+
+        break
 
 
 if __name__ == "__main__":
@@ -176,3 +265,6 @@ if __name__ == "__main__":
 
     #生成训练数据
     examples = read_squad_examples(input_file=args.train_set, version_2_with_negative=True)
+
+    #特征转换
+    features = convert_example_to_features(examples=examples, tokenizer=tokenizer, max_seq_length=args.max_seq_length, doc_stride=None, max_query_length=args.max_query_length)
