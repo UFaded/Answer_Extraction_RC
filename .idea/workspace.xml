@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3ceb436a-2b09-44f0-9456-5b8528acd89b" name="默认更改列表" comment="">
-      <change afterPath="$PROJECT_DIR$/Examples/test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Examples/args.py" beforeDir="false" afterPath="$PROJECT_DIR$/Examples/args.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Examples/example.py" beforeDir="false" afterPath="$PROJECT_DIR$/Examples/example.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PreTreatment/split.py" beforeDir="false" afterPath="$PROJECT_DIR$/PreTreatment/split.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PreTreatment/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/PreTreatment/train.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -19,8 +16,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Examples/example.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="279">
-              <caret line="253" column="25" lean-forward="true" selection-start-line="253" selection-start-column="25" selection-end-line="253" selection-end-column="25" />
+            <state relative-caret-position="241">
+              <caret line="274" column="32" selection-start-line="274" selection-start-column="32" selection-end-line="274" selection-end-column="32" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -40,8 +37,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/PreTreatment/train.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="342">
-              <caret line="18" selection-start-line="18" selection-end-line="18" />
+            <state relative-caret-position="285">
+              <caret line="15" column="22" lean-forward="true" selection-start-line="15" selection-start-column="22" selection-end-line="15" selection-end-column="22" />
             </state>
           </provider>
         </entry>
@@ -79,15 +76,15 @@
         <option value="$PROJECT_DIR$/Examples/config.py" />
         <option value="$PROJECT_DIR$/Examples/test.py" />
         <option value="$PROJECT_DIR$/Examples/args.py" />
-        <option value="$PROJECT_DIR$/Examples/example.py" />
         <option value="$PROJECT_DIR$/PreTreatment/train.py" />
+        <option value="$PROJECT_DIR$/Examples/example.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="322" />
-    <option name="y" value="31" />
-    <option name="width" value="1160" />
+    <option name="x" value="179" />
+    <option name="y" value="23" />
+    <option name="width" value="1335" />
     <option name="height" value="877" />
   </component>
   <component name="ProjectView">
@@ -145,7 +142,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.train">
+  <component name="RunManager" selected="Python.example">
     <configuration name="example" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Answer_Extraction_RC" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -258,8 +255,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.train" />
         <item itemvalue="Python.example" />
+        <item itemvalue="Python.train" />
         <item itemvalue="Python.test" />
         <item itemvalue="Python.text_segment" />
         <item itemvalue="Python.text_process" />
@@ -287,15 +284,15 @@
       <workItem from="1584956117716" duration="16007000" />
       <workItem from="1585142484100" duration="732000" />
       <workItem from="1585143224004" duration="1981000" />
-      <workItem from="1585183142660" duration="5901000" />
+      <workItem from="1585183142660" duration="8281000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="71348000" />
+    <option name="totallyTimeSpent" value="73728000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="322" y="31" width="1160" height="877" extended-state="0" />
+    <frame x="179" y="23" width="1335" height="877" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.17669459" />
@@ -352,9 +349,9 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/MRC$test.coverage" NAME="test Coverage Results" MODIFIED="1584948462117" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/PreTreatment" />
     <SUITE FILE_PATH="coverage/MRC$text_segment.coverage" NAME="text_segment Coverage Results" MODIFIED="1584526320881" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/PreTreatment" />
-    <SUITE FILE_PATH="coverage/Answer_Extraction_RC$example.coverage" NAME="example Coverage Results" MODIFIED="1585189169474" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Examples" />
+    <SUITE FILE_PATH="coverage/Answer_Extraction_RC$example.coverage" NAME="example Coverage Results" MODIFIED="1585191919036" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Examples" />
     <SUITE FILE_PATH="coverage/MRC$text_process.coverage" NAME="text_process Coverage Results" MODIFIED="1584255737924" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/PreTreatment" />
-    <SUITE FILE_PATH="coverage/Answer_Extraction_RC$train.coverage" NAME="train Coverage Results" MODIFIED="1585189358528" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/PreTreatment" />
+    <SUITE FILE_PATH="coverage/Answer_Extraction_RC$train.coverage" NAME="train Coverage Results" MODIFIED="1585191510869" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/PreTreatment" />
     <SUITE FILE_PATH="coverage/MRC$example.coverage" NAME="example Coverage Results" MODIFIED="1584951397635" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Examples" />
   </component>
   <component name="editorHistoryManager">
@@ -446,15 +443,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/PreTreatment/train.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="18" selection-start-line="18" selection-end-line="18" />
+        <state relative-caret-position="285">
+          <caret line="15" column="22" lean-forward="true" selection-start-line="15" selection-start-column="22" selection-end-line="15" selection-end-column="22" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Examples/example.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="279">
-          <caret line="253" column="25" lean-forward="true" selection-start-line="253" selection-start-column="25" selection-end-line="253" selection-end-column="25" />
+        <state relative-caret-position="241">
+          <caret line="274" column="32" selection-start-line="274" selection-start-column="32" selection-end-line="274" selection-end-column="32" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>

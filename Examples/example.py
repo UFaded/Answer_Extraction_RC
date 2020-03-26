@@ -226,39 +226,67 @@ def convert_example_to_features(examples, tokenizer, max_seq_length, doc_stride,
                 end_position = example.end_position
 
         # The -3 accounts for [CLS] [SEP] [SEP]
-
         max_tokens_for_doc = args.max_seq_length - len(query_tokens) - 3
 
         # 问题截断
         if len(query_tokens) > max_query_length:
             query_tokens = query_tokens[0: max_query_length]
 
-        tokens = []
-        segment_ids = []
+        # We can have documents that are longer than the maximum sequence length.
+        # To deal with this we do a sliding window approach, where we take chunks
+        # of the up to our max length with a stride of `doc_stride`.
+        '''
+        doc_stride 滑动窗口长度
+        由于某些法律文本长度过长，不考虑直接截断的可能。 如，我们规定最长不超过512，但实际上，有些文本长达900多字。
+        因此需要设定一个滑动窗口，从文本的左端向右端滑动，移动的个数为doc_stride
+        这样bert的输入则变成了，query+滑动窗口内部文字
+        '''
+        doc_spans = []
+        start_offset = 0
+        _DocSpan = collections.namedtuple(  # pylint: disable=invalid-name
+            "DocSpan", ["start", "length"])
 
-        tokens.append("[CLS]")
-        segment_ids.append(0)
+        while start_offset < len(all_doc_tokens):
+            length = len(all_doc_tokens) - start_offset #剩余长度
+            if length > max_tokens_for_doc:
+                length = max_tokens_for_doc
+            doc_spans.append(_DocSpan(start=start_offset, length=length))
+            if start_offset + length == len(all_doc_tokens):
+                break
+            start_offset += min(length, doc_stride)
 
-        for token in query_tokens:
-            tokens.append(token)
+        #print(len(doc_spans)) # 3
+        #print(doc_spans) # [DocSpan(start=0, length=494), DocSpan(start=256, length=494), DocSpan(start=512, length=459)]
+
+        for (doc_span_idx, doc_span) in enumerate(doc_spans):
+            tokens = []
+            segment_ids = []
+
+            # initial
+            tokens.append("[CLS]")
             segment_ids.append(0)
 
-        tokens.append("SEP")
-        segment_ids.append(0)
+            # add query's token
+            for token in query_tokens:
+                tokens.append(token)
+                segment_ids.append(0)
 
-        for i in doc_tokens:
-            tokens.append(i)
+            # add segment tag
+            tokens.append("[SEP]")
+            segment_ids.append(0)
+
+            for i in range(doc_span.length): # 相对长度
+                split_token_position = doc_span.start + i
+                tokens.append(all_doc_tokens[split_token_position])
+                segment_ids.append(1)
+            tokens.append("[SEP]")
             segment_ids.append(1)
 
-        tokens.append("[SEP]")
-        segment_ids.append(1)
-
-        print(len(tokens), len(segment_ids))
-        print(tokens)
-        print(segment_ids)
+            input_ids = tokenizer.convert_tokens_to_ids(tokens)
+            print(input_ids)
+            input_mask = [1] * len(input_ids)
 
         break
-
 
 if __name__ == "__main__":
     tokenizer = BertTokenizer.from_pretrained('bert-base-chinese', do_lower_case=True)
@@ -267,4 +295,4 @@ if __name__ == "__main__":
     examples = read_squad_examples(input_file=args.train_set, version_2_with_negative=True)
 
     #特征转换
-    features = convert_example_to_features(examples=examples, tokenizer=tokenizer, max_seq_length=args.max_seq_length, doc_stride=None, max_query_length=args.max_query_length)
+    features = convert_example_to_features(examples=examples, tokenizer=tokenizer, max_seq_length=args.max_seq_length, doc_stride=256, max_query_length=args.max_query_length)

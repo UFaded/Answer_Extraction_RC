@@ -5,7 +5,7 @@ tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=Tru
 text = "Hey, Mary. you made it. how was your trip?"
 token = tokenizer.tokenize(text)
 inputs_id = tokenizer.convert_tokens_to_ids(token)
-
+print(token[0])
 tokens = []
 segment_ids = []
 
@@ -15,4 +15,4 @@ for i in token:
     segment_ids.append(0)
 tokens.append("[SEP]")
 segment_ids.append(1)
-print(tokens)
+
